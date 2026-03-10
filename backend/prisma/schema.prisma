@@ -1,0 +1,52 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+model users {
+  id          String     @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  email       String     @unique(map: "idx_users_email") @db.VarChar(100)
+  password    String     @db.VarChar(100)
+  name        String     @db.VarChar(255)
+  role        String     @default("user") @db.VarChar(50)
+  createdby   String?    @db.VarChar(100)
+  createddate DateTime?  @default(now()) @db.Timestamp(6)
+  modifby     String?    @db.VarChar(100)
+  modifdate   DateTime?  @db.Timestamp(6)
+  bookings    bookings[]
+}
+
+model rooms {
+  id              String     @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  name            String     @db.VarChar(255)
+  description     String?
+  price_per_night Decimal    @db.Decimal(10, 2)
+  capacity        Int
+  is_active       Boolean?   @default(true)
+  createdby       String?    @db.VarChar(100)
+  createddate     DateTime?  @default(now()) @db.Timestamp(6)
+  modifby         String?    @db.VarChar(100)
+  modifdate       DateTime?  @db.Timestamp(6)
+  bookings        bookings[]
+}
+
+model bookings {
+  id          String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  user_id     String    @db.Uuid
+  room_id     String    @db.Uuid
+  start_date  DateTime  @db.Date
+  end_date    DateTime  @db.Date
+  status      String?   @default("PENDING") @db.VarChar(20)
+  createdby   String?   @db.VarChar(100)
+  createddate DateTime? @default(now()) @db.Timestamp(6)
+  modifby     String?   @db.VarChar(100)
+  modifdate   DateTime? @db.Timestamp(6)
+  rooms       rooms     @relation(fields: [room_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "fk_room")
+  users       users     @relation(fields: [user_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "fk_user")
+
+  @@index([room_id, start_date, end_date], map: "idx_bookings_room_date")
+  @@index([user_id], map: "idx_bookings_user")
+}
