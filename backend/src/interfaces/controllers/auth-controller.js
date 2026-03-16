@@ -1,5 +1,5 @@
-import { PrismaUserRepository } from "../../infrastructure/repositories/prisma-user-repository";
-import { RegisterUser } from "../../application/usecase/register-user";
+import { PrismaUserRepository } from "../../infrastructure/repositories/prisma-user-repository.js";
+import { RegisterUser } from "../../application/usecase/register-user.js";
 
 export const register = async (req, res) => {
 
