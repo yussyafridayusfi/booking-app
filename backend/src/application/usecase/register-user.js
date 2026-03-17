@@ -6,7 +6,6 @@ export class RegisterUser {
     }
     
     async excecute({name, email, password}) {
-        
         const existingUser = await this.userRepository.findByEmail(email);
 
         if (existingUser) {
