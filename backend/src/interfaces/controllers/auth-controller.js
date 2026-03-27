@@ -1,15 +1,8 @@
-import { PrismaUserRepository } from "../../infrastructure/repositories/prisma-user-repository.js";
-import { RegisterUser } from "../../application/usecase/register-user.js";
-
 export const register = async (req, res) => {
 
     try {
-        const userRepository = new PrismaUserRepository();
-        const registerUser = new RegisterUser(userRepository);
-
-        const user = await registerUser.excecute(req.body);
-
-        res.status(201).json(user);
+        // Database integration needed - repository implementation removed with Prisma
+        res.status(501).json({ error: "Database layer not configured" });
     } catch (error) {
         res.status(400).json({ error: error.message });
     }
